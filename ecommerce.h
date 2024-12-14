@@ -1,13 +1,24 @@
 #ifndef ECOMMERCE_H_INCLUDED
 #define ECOMMERCE_H_INCLUDED
 
+//  Tubes Kelompok 1
+//  Fathan Fardian Sanum            103012330106
+//  Fransisca Anggraeni Hartakaadi  103012300366
+//  Tipe B (MLL)
+//  Parent = Toko (DLL)
+//  Relasi = Transaksi (SLL)
+//  Child = Pembeli (SLL)
+//  Topik = Aplikasi E-Commerce
+
 #include <iostream>
 #include <string>
 
 #define first(L) ((L).first)
+#define last(L) ((L).last)
 #define info(P) (P->info)
 #define next(P) (P->next)
 #define prev(P) (P->prev)
+
 
 using namespace std;
 
@@ -16,7 +27,6 @@ struct Toko {
     int idToko;
     string namaToko;
     int jumlahProduk;
-    int totalPenjualan;
 };
 
 struct Pembeli {
@@ -34,15 +44,14 @@ typedef Pembeli infotypePembeli;
 // Pointer List Toko (DLL)
 struct ElemenToko {
     infotypeToko info;
-    adrToko prev;  // Doubly Linked List (DLL)
+    adrToko prev;  // Double Linked List (DLL)
     adrToko next;
 };
 
 // Pointer List Pembeli (SLL)
 struct ElemenPembeli {
     infotypePembeli info;
-    adrPembeli next;  // Singly Linked List (SLL)
-
+    adrPembeli next;  // Single Linked List (SLL)
 };
 
 // Pointer List Transaksi
@@ -55,6 +64,7 @@ struct ElemenTransaksi {
 // List Toko (DLL)
 struct ListToko {
     adrToko first;
+    adrToko last;
 };
 
 // List Pembeli (SLL)
@@ -121,10 +131,10 @@ void deleteTransaksi(ListTransaksi &LTR, int Toko_ID, int Pembeli_ID);
 
 // Menampilkan seluruh data Transaksi
 void showAllData(ListTransaksi &LTR);
-
+/*
 // Menampilkan daftar Toko berdasarkan Pembeli tertentu
 void showTokoByPembeli(ListTransaksi &LTR, int Pembeli_ID);
-
+*/
 // Menampilkan daftar Pembeli berdasarkan Toko tertentu
 void showPembeliByToko(ListTransaksi &LTR, int Toko_ID);
 
@@ -133,5 +143,10 @@ int countPembeli(ListTransaksi &LTR, int Toko_ID);
 
 // Menghapus semua Pembeli yang terkait dengan Toko tertentu
 void deletePembeliByToko(ListPembeli &LP, ListTransaksi &LTR, int Toko_ID);
-
+/*
+// Menghapus semua Toko yang terkait dengan Pembeli tertentu dan menghapus transaksi terkait
+void deleteTokoByPembeli(ListToko &LT, ListTransaksi &LTR, int Pembeli_ID);
+*/
+// Menghapus Toko dan semua transaksi yang terkait dengan Toko tersebut
+void deleteTokoDanTransaksiTerkait(ListToko &LT, ListTransaksi &LTR, int Toko_ID);
 #endif // ECOMMERCE_H_INCLUDED
