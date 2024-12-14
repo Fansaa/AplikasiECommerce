@@ -50,7 +50,7 @@ int main() {
                 cout << "Masukkan Jumlah Produk: ";
                 cin >> jumlahBeli;
 
-                Toko toko = {tokoID, namaToko, jumlahBeli, 0};
+                Toko toko = {tokoID, namaToko, jumlahBeli};
                 ElemenToko* P = createNewElmToko(toko);
 
                 if (pilihanToko == 1) {
@@ -67,11 +67,11 @@ int main() {
             }
 
             case 3: {
-                cout << "Masukkan ID Toko yang ingin dihapus: ";
+                cout << "Masukkan ID Toko yang ingin dihapus semua transaksi terkaitnya: ";
                 cin >> tokoID;
                 ElemenToko* P = searchToko(LT, tokoID);
                 if (P) {
-                    deleteToko(LT, tokoID);  // Menghapus Toko dan Transaksi terkait
+                    deleteTokoDanTransaksiTerkait(LT,LTR,tokoID);  // Menghapus Toko dan Transaksi terkait
                 } else {
                     cout << "Toko tidak ditemukan.\n";
                 }
@@ -84,8 +84,6 @@ int main() {
                 ElemenToko* P = searchToko(LT, tokoID);
                 if (P) {
                     cout << "Toko Ditemukan: " << P->info.namaToko << endl;
-                } else {
-                    cout << "Toko tidak ditemukan.\n";
                 }
                 break;
             }
@@ -96,8 +94,6 @@ int main() {
                 ElemenPembeli* pembeli = searchPembeli(LP, pembeliID);
                 if (pembeli) {
                     cout << "Pembeli Ditemukan: " << pembeli->info.namaPembeli << endl;
-                } else {
-                    cout << "Pembeli tidak ditemukan.\n";
                 }
                 break;
             }
