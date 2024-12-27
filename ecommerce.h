@@ -1,192 +1,141 @@
-#include "ecommerce.h"
+#ifndef ECOMMERCE_H_INCLUDED
+#define ECOMMERCE_H_INCLUDED
+
+//  Tubes Kelompok 1
+//  Fathan Fardian Sanum            103012330106
+//  Fransisca Anggraeni Hartakaadi  103012300366
+//  Tipe B (MLL)
+//  Parent = Toko (DLL)
+//  Relasi = Transaksi (SLL)
+//  Child = Pembeli (SLL)
+//  Topik = Aplikasi E-Commerce
+
 #include <iostream>
 #include <string>
 
+#define first(L) ((L).first)
+#define last(L) ((L).last)
+#define info(P) (P->info)
+#define next(P) (P->next)
+#define prev(P) (P->prev)
+#define detailToko(newTransaksi) (newTransaksi->detailToko)
+#define detailPembeli(newTransaksi) (newTransaksi->detailPembeli)
+
 using namespace std;
 
-int main() {
-    ListToko LT;
-    ListPembeli LP;
-    ListTransaksi LTR;
+// Definisi struktur data
+struct Toko {
+    int idToko;
+    string namaToko;
+    int jumlahProduk;
+};
 
-    createListToko(LT);    // Membuat list Toko kosong
-    createListPembeli(LP); // Membuat list Pembeli kosong
-    createListTransaksi(LTR);  // Membuat list Transaksi kosong
+struct Pembeli {
+    int idPembeli;
+    string namaPembeli;
+};
 
-    int pilihan;
-    int tokoID, pembeliID, jumlahBeli;
-    string namaToko, namaPembeli;
+typedef struct ElemenToko* adrToko;
+typedef struct ElemenPembeli* adrPembeli;
+typedef struct ElemenTransaksi* adrTransaksi;
 
-    do {
-        cout << "\nMenu Aplikasi E-Commerce:\n";
-        cout << "1. Tambah Data Toko (Depan/Belakang)\n";
-        cout << "2. Tampilkan Semua Data Toko\n";
-        cout << "3. Hapus Data Toko dan Transaksi Terkait\n";
-        cout << "4. Cari Data Toko\n";
-        cout << "5. Cari Data Pembeli\n";
-        cout << "6. Tambah Data Pembeli\n";
-        cout << "7. Hubungkan Toko dengan Pembeli (Transaksi)\n";
-        cout << "8. Tampilkan Semua Data Transaksi\n";
-        cout << "9. Tampilkan Pembeli Berdasarkan Toko\n";
-        cout << "10. Hapus Pembeli Berdasarkan Toko yang terkait\n";
-        cout << "11. Hitung Jumlah Pembeli pada Toko Tertentu\n";
-        cout << "12. Keluar\n";
-        cout << "Pilih: ";
-        cin >> pilihan;
+typedef Toko infotypeToko;
+typedef Pembeli infotypePembeli;
 
-        switch (pilihan) {
-            case 1: {
-                int pilihanToko;
-                cout << "1. Tambah Toko di Depan\n";
-                cout << "2. Tambah Toko di Belakang\n";
-                cout << "Pilih: ";
-                cin >> pilihanToko;
+// Pointer List Toko (DLL)
+struct ElemenToko {
+    infotypeToko info;
+    adrToko prev;  // Double Linked List (DLL)
+    adrToko next;
+};
 
-                cout << "Masukkan ID Toko: ";
-                cin >> tokoID;
-                cin.ignore();  // Menghapus karakter baris baru dari buffer input
-                cout << "Masukkan Nama Toko: ";
-                getline(cin, namaToko);
-                cout << "Masukkan Jumlah Produk: ";
-                cin >> jumlahBeli;
+// Pointer List Pembeli (SLL)
+struct ElemenPembeli {
+    infotypePembeli info;
+    adrPembeli next;  // Single Linked List (SLL)
+};
 
-                bool cek = isIDTokoExist(LT, tokoID);
-                if (cek == true) {
-                    cout << endl;
-                    cout << "ID sudah ada, tidak bisa menambahkan Toko" << endl;
-                    break;
-                }
+// Pointer List Transaksi
+struct ElemenTransaksi {
+    adrToko detailToko;
+    adrPembeli detailPembeli;
+    adrTransaksi next;
+};
 
-                Toko toko = {tokoID, namaToko, jumlahBeli};
-                ElemenToko* P = createNewElmToko(toko);
+// List Toko (DLL)
+struct ListToko {
+    adrToko first;
+    adrToko last;
+};
 
-                if (pilihanToko == 1) {
-                    insertFirstToko(LT, P);  // Masukkan di bagian depan
-                } else {
-                    insertLastToko(LT, P);  // Masukkan di bagian belakang
-                }
-                break;
-            }
+// List Pembeli (SLL)
+struct ListPembeli {
+    adrPembeli first;
+};
 
-            case 2: {
-                showToko(LT); // Menampilkan seluruh data Toko
-                break;
-            }
+// List Transaksi (Relasi Toko dan Pembeli) (SLL)
+struct ListTransaksi {
+    adrTransaksi first;
+};
+// Fungsi dan prosedur yang akan diimplementasikan
 
-            case 3: {
-                cout << "Masukkan ID Toko yang ingin dihapus semua transaksi terkaitnya: ";
-                cin >> tokoID;
-                ElemenToko* P = searchToko(LT, tokoID);
-                if (P) {
-                    deleteTokoDanTransaksiTerkait(LT,LTR,tokoID);  // Menghapus Toko dan Transaksi terkait
-                } else {
-                    cout << "Toko tidak ditemukan.\n";
-                }
-                break;
-            }
+// Inisialisasi List Toko
+void createListToko(ListToko &LT);
 
-            case 4: {
-                cout << "Masukkan ID Toko yang ingin dicari: ";
-                cin >> tokoID;
-                ElemenToko* P = searchToko(LT, tokoID);
-                if (P) {
-                    cout << "Toko Ditemukan: " << info(P).namaToko << endl;
-                    cout << "ID Toko: " << info(P).idToko << endl;
-                    cout << "Jumlah Produk: " << info(P).jumlahProduk << endl;
-                }
-                break;
-            }
+// Inisialisasi List Pembeli
+void createListPembeli(ListPembeli &LP);
 
-            case 5: {
-                cout << "Masukkan ID Pembeli yang ingin dicari: ";
-                cin >> pembeliID;
-                ElemenPembeli* pembeli = searchPembeli(LP, pembeliID);
-                if (pembeli) {
-                    cout << "Pembeli Ditemukan: " << info(pembeli).namaPembeli << endl;
-                    cout << "ID Pembeli: " << info(pembeli).idPembeli << endl;
-                }
-                break;
-            }
+// Inisialisasi List Transaksi
+void createListTransaksi(ListTransaksi &LTR);
 
-            case 6: {
-                cout << "Masukkan ID Pembeli: ";
-                cin >> pembeliID;
-                cin.ignore();  // Menghapus karakter baris baru dari buffer input
-                cout << "Masukkan Nama Pembeli: ";
-                getline(cin, namaPembeli);
+// Membuat elemen baru pada List Toko
+adrToko createNewElmToko(infotypeToko data);
 
-                bool cek = isIDPembeliExist(LP, pembeliID);
-                if (cek == true) {
-                    cout << endl;
-                    cout << "ID sudah ada, tidak bisa menambahkan Pembeli" << endl;
-                    break;
-                }
+// Membuat elemen baru pada List Pembeli
+adrPembeli createNewElmPembeli(infotypePembeli data);
 
-                Pembeli pembeli = {pembeliID, namaPembeli};
-                ElemenPembeli* P = createNewElmPembeli(pembeli);
-                insertLastPembeli(LP, P);  // Masukkan Pembeli di bagian belakang
-                break;
-            }
+// Membuat elemen baru pada List Transaksi
+adrTransaksi createNewElmTransaksi(adrToko detailToko, adrPembeli detailPembeli);
 
-            case 7: {
-                cout << "Masukkan ID Toko: ";
-                cin >> tokoID;
-                cout << "Masukkan ID Pembeli: ";
-                cin >> pembeliID;
+// Fungsi untuk mengecek apakah ID sudah ada di dalam List Toko
+bool isIDTokoExist(ListToko LT, int id);
 
-                ElemenToko* toko = searchToko(LT, tokoID);
-                ElemenPembeli* pembeli = searchPembeli(LP, pembeliID);
+// Menambahkan elemen baru di awal List Toko
+void insertFirstToko(ListToko &LT, adrToko PT);
 
-                if (toko && pembeli) {
-                    insertTransaksi(LTR, toko, pembeli); // Menghubungkan transaksi
-                } else {
-                    cout << "Transaksi tidak bisa dilakukan.\n";
-                }
-                break;
-            }
+// Menambahkan elemen baru di akhir List Toko
+void insertLastToko(ListToko &LT, adrToko PT);
 
-            case 8: {
-                showAllData(LTR); // Menampilkan seluruh data transaksi
-                break;
-            }
+// Mencari Toko berdasarkan ID
+adrToko searchToko(ListToko &LT, int Toko_ID);
 
-            case 9: {
-                cout << "Masukkan ID Toko untuk melihat Pembeli: ";
-                cin >> tokoID;
-                showPembeliByToko(LTR, tokoID); // Menampilkan pembeli berdasarkan toko
-                break;
-            }
+// Menampilkan semua data Toko
+void showToko(ListToko &LT);
 
-            case 10: {
-                cout << "Masukkan ID Toko untuk menghapus pembeli: ";
-                cin >> tokoID;
-                deletePembeliByToko(LP, LTR, tokoID); // Menghapus pembeli berdasarkan toko
-                break;
-            }
+// Fungsi untuk mengecek apakah ID sudah ada di dalam List Pembeli
+bool isIDPembeliExist(ListPembeli LP, int id);
 
-            case 11: {
-                cout << "Masukkan ID Toko untuk menghitung jumlah pembeli: ";
-                cin >> tokoID;
-                bool cek = isIDTokoExist(LT, tokoID);
-                if (cek == false) {
-                    cout << endl;
-                    cout << "ID Tidak ditemukan, tidak bisa menghitung jumlah pembeli" << endl;
-                    break;
-                }
-                int count = countPembeli(LTR, tokoID); // Menghitung jumlah pembeli
-                cout << "Jumlah pembeli pada Toko ID " << tokoID << ": " << count << endl;
-                break;
-            }
+// Menambahkan elemen Pembeli di akhir List Pembeli
+void insertLastPembeli(ListPembeli &LP, adrPembeli PP);
 
-            case 12: {
-                cout << "Keluar dari program.\n";
-                break;
-            }
+// Mencari Pembeli berdasarkan ID
+adrPembeli searchPembeli(ListPembeli &LP, int Pembeli_ID);
 
-            default:
-                cout << "Pilihan tidak valid.\n";
-        }
-    } while (pilihan != 12);
+// Menambahkan Transaksi (Relasi Toko dan Pembeli)
+void insertTransaksi(ListTransaksi &LTR, adrToko detailToko, adrPembeli detailPembeli);
 
-    return 0;
-}
+// Menampilkan seluruh data Transaksi
+void showAllData(ListTransaksi &LTR);
+
+// Menampilkan daftar Pembeli berdasarkan Toko tertentu
+void showPembeliByToko(ListTransaksi &LTR, int Toko_ID);
+
+// Menghitung jumlah Pembeli pada Toko tertentu
+int countPembeli(ListTransaksi &LTR, int Toko_ID);
+
+// Menghapus semua Pembeli yang terkait dengan Toko tertentu
+void deletePembeliByToko(ListPembeli &LP, ListTransaksi &LTR, int Toko_ID);
+
+// Menghapus Toko dan semua transaksi yang terkait dengan Toko tersebut
+void deleteTokoDanTransaksiTerkait(ListToko &LT, ListTransaksi &LTR, int Toko_ID);
+#endif // ECOMMERCE_H_INCLUDED
