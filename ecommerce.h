@@ -18,7 +18,8 @@
 #define info(P) (P->info)
 #define next(P) (P->next)
 #define prev(P) (P->prev)
-
+#define detailToko(newTransaksi) (newTransaksi->detailToko)
+#define detailPembeli(newTransaksi) (newTransaksi->detailPembeli)
 
 using namespace std;
 
@@ -96,14 +97,14 @@ adrPembeli createNewElmPembeli(infotypePembeli data);
 // Membuat elemen baru pada List Transaksi
 adrTransaksi createNewElmTransaksi(adrToko detailToko, adrPembeli detailPembeli);
 
+// Fungsi untuk mengecek apakah ID sudah ada di dalam List Toko
+bool isIDTokoExist(ListToko LT, int id);
+
 // Menambahkan elemen baru di awal List Toko
 void insertFirstToko(ListToko &LT, adrToko PT);
 
 // Menambahkan elemen baru di akhir List Toko
 void insertLastToko(ListToko &LT, adrToko PT);
-
-// Menghapus elemen Toko berdasarkan ID
-void deleteToko(ListToko &LT, int Toko_ID);
 
 // Mencari Toko berdasarkan ID
 adrToko searchToko(ListToko &LT, int Toko_ID);
@@ -111,14 +112,11 @@ adrToko searchToko(ListToko &LT, int Toko_ID);
 // Menampilkan semua data Toko
 void showToko(ListToko &LT);
 
-// Menambahkan elemen Pembeli di awal List Pembeli
-void insertFirstPembeli(ListPembeli &LP, adrPembeli PP);
+// Fungsi untuk mengecek apakah ID sudah ada di dalam List Pembeli
+bool isIDPembeliExist(ListPembeli LP, int id);
 
 // Menambahkan elemen Pembeli di akhir List Pembeli
 void insertLastPembeli(ListPembeli &LP, adrPembeli PP);
-
-// Menghapus elemen Pembeli berdasarkan ID
-void deletePembeli(ListPembeli &LP, int Pembeli_ID);
 
 // Mencari Pembeli berdasarkan ID
 adrPembeli searchPembeli(ListPembeli &LP, int Pembeli_ID);
@@ -126,15 +124,9 @@ adrPembeli searchPembeli(ListPembeli &LP, int Pembeli_ID);
 // Menambahkan Transaksi (Relasi Toko dan Pembeli)
 void insertTransaksi(ListTransaksi &LTR, adrToko detailToko, adrPembeli detailPembeli);
 
-// Menghapus Transaksi berdasarkan ID Toko dan ID Pembeli
-void deleteTransaksi(ListTransaksi &LTR, int Toko_ID, int Pembeli_ID);
-
 // Menampilkan seluruh data Transaksi
 void showAllData(ListTransaksi &LTR);
-/*
-// Menampilkan daftar Toko berdasarkan Pembeli tertentu
-void showTokoByPembeli(ListTransaksi &LTR, int Pembeli_ID);
-*/
+
 // Menampilkan daftar Pembeli berdasarkan Toko tertentu
 void showPembeliByToko(ListTransaksi &LTR, int Toko_ID);
 
@@ -143,10 +135,7 @@ int countPembeli(ListTransaksi &LTR, int Toko_ID);
 
 // Menghapus semua Pembeli yang terkait dengan Toko tertentu
 void deletePembeliByToko(ListPembeli &LP, ListTransaksi &LTR, int Toko_ID);
-/*
-// Menghapus semua Toko yang terkait dengan Pembeli tertentu dan menghapus transaksi terkait
-void deleteTokoByPembeli(ListToko &LT, ListTransaksi &LTR, int Pembeli_ID);
-*/
+
 // Menghapus Toko dan semua transaksi yang terkait dengan Toko tersebut
 void deleteTokoDanTransaksiTerkait(ListToko &LT, ListTransaksi &LTR, int Toko_ID);
 #endif // ECOMMERCE_H_INCLUDED
