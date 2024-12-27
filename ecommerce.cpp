@@ -40,10 +40,22 @@ adrPembeli createNewElmPembeli(infotypePembeli data) {
 // Fungsi untuk membuat elemen baru pada list Transaksi
 adrTransaksi createNewElmTransaksi(adrToko detailToko, adrPembeli detailPembeli) {
     adrTransaksi newTransaksi = new ElemenTransaksi;
-    newTransaksi->detailToko = detailToko;
-    newTransaksi->detailPembeli = detailPembeli;
+    detailToko(newTransaksi) = detailToko;
+    detailPembeli(newTransaksi) = detailPembeli;
     next(newTransaksi) = nullptr;
     return newTransaksi;
+}
+
+// Fungsi untuk mengecek apakah ID sudah ada di dalam List Toko
+bool isIDTokoExist(ListToko LT, int id) {
+    adrToko temp = first(LT);
+    while (temp != nullptr) {
+        if (info(temp).idToko == id) {
+            return true;
+        }
+        temp = next(temp);
+    }
+    return false;
 }
 
 // Menambahkan elemen baru di awal List Toko
@@ -73,32 +85,6 @@ void insertLastToko(ListToko &LT, adrToko PT) {
     cout << "Berhasil menambahkan Toko " << info(PT).namaToko << " (ID: " << info(PT).idToko << ") di akhir list" << endl;
 }
 
-// Menghapus elemen Toko berdasarkan ID
-void deleteToko(ListToko &LT, int Toko_ID) {
-    if (first(LT) == nullptr) {
-        cout << "List Toko kosong" << endl;
-        return;
-    }
-
-    adrToko P = searchToko(LT, Toko_ID);
-    if (P != nullptr) {
-        string namaToko = info(P).namaToko;  // Simpan nama toko sebelum dihapus
-        if (P == first(LT)) {
-            first(LT) = next(P);
-            if (first(LT) != nullptr) {
-                prev(first(LT)) = nullptr;
-            }
-        } else {
-            prev(P)->next = next(P);
-            if (next(P) != nullptr) {
-                prev(next(P)) = prev(P);
-            }
-        }
-        cout << "Berhasil menghapus Toko " << namaToko << " (ID: " << Toko_ID << ")" << endl;
-        delete P;
-    }
-}
-
 // Mencari Toko berdasarkan ID
 adrToko searchToko(ListToko &LT, int Toko_ID) {
     adrToko P = first(LT);
@@ -123,15 +109,16 @@ void showToko(ListToko &LT) {
     }
 }
 
-// Menambahkan elemen Pembeli di awal List Pembeli
-void insertFirstPembeli(ListPembeli &LP, adrPembeli PP) {
-    if (first(LP) == nullptr) {
-        first(LP) = PP;
-    } else {
-        next(PP) = first(LP);
-        first(LP) = PP;
+// Fungsi untuk mengecek apakah ID sudah ada di dalam List Pembeli
+bool isIDPembeliExist(ListPembeli LP, int id) {
+    adrPembeli temp = first(LP);
+    while (temp != nullptr) {
+        if (info(temp).idPembeli == id) {
+            return true;
+        }
+        temp = next(temp);
     }
-    cout << "Berhasil menambahkan Pembeli " << info(PP).namaPembeli << " (ID: " << info(PP).idPembeli << ") di awal list" << endl;
+    return false;
 }
 
 // Menambahkan elemen Pembeli di akhir List Pembeli
@@ -146,30 +133,6 @@ void insertLastPembeli(ListPembeli &LP, adrPembeli PP) {
         next(last) = PP;
     }
     cout << "Berhasil menambahkan Pembeli " << info(PP).namaPembeli << " (ID: " << info(PP).idPembeli << ") di akhir list" << endl;
-}
-
-// Menghapus elemen Pembeli berdasarkan ID
-void deletePembeli(ListPembeli &LP, int Pembeli_ID) {
-    if (first(LP) == nullptr) {
-        cout << "List Pembeli kosong" << endl;
-        return;
-    }
-
-    adrPembeli P = searchPembeli(LP, Pembeli_ID);
-    if (P != nullptr) {
-        string namaPembeli = info(P).namaPembeli;  // Simpan nama pembeli sebelum dihapus
-        if (P == first(LP)) {
-            first(LP) = next(P);
-        } else {
-            adrPembeli prev = first(LP);
-            while (next(prev) != P) {
-                prev = next(prev);
-            }
-            next(prev) = next(P);
-        }
-        cout << "Berhasil menghapus Pembeli " << namaPembeli << " (ID: " << Pembeli_ID << ")" << endl;
-        delete P;
-    }
 }
 
 // Mencari Pembeli berdasarkan ID
@@ -201,49 +164,9 @@ void insertTransaksi(ListTransaksi &LTR, adrToko detailToko, adrPembeli detailPe
         next(last) = PT;
     }
 
-    cout << "Berhasil menambahkan Transaksi antara Toko " << detailToko->info.namaToko
-         << " (ID: " << detailToko->info.idToko << ") dan Pembeli "
-         << detailPembeli->info.namaPembeli << " (ID: " << detailPembeli->info.idPembeli << ")" << endl;
-}
-
-// Menghapus Transaksi berdasarkan ID Toko dan ID Pembeli
-void deleteTransaksi(ListTransaksi &LTR, int Toko_ID, int Pembeli_ID) {
-    if (first(LTR) == nullptr) {
-        cout << "List Transaksi kosong" << endl;
-        return;
-    }
-
-    adrTransaksi P = first(LTR);
-    adrTransaksi prev = nullptr;
-    bool found = false;
-
-    while (P != nullptr && !found) {
-        if (P->detailToko->info.idToko == Toko_ID && P->detailPembeli->info.idPembeli == Pembeli_ID) {
-            found = true;
-            string namaToko = P->detailToko->info.namaToko;
-            string namaPembeli = P->detailPembeli->info.namaPembeli;
-
-            if (prev == nullptr) {
-                first(LTR) = next(P);
-            } else {
-                prev->next = next(P);
-            }
-
-            cout << "Berhasil menghapus Transaksi antara Toko " << namaToko
-                 << " (ID: " << Toko_ID << ") dan Pembeli "
-                 << namaPembeli << " (ID: " << Pembeli_ID << ")" << endl;
-
-            delete P;
-        } else {
-            prev = P;
-            P = next(P);
-        }
-    }
-
-    if (!found) {
-        cout << "Transaksi dengan ID Toko " << Toko_ID
-             << " dan ID Pembeli " << Pembeli_ID << " tidak ditemukan" << endl;
-    }
+    cout << "Berhasil menambahkan Transaksi antara Toko " << info(detailToko).namaToko
+         << " (ID: " << info(detailToko).idToko << ") dan Pembeli "
+         << info(detailPembeli).namaPembeli << " (ID: " << info(detailPembeli).idPembeli << ")" << endl;
 }
 
 // Menampilkan seluruh data Transaksi
@@ -261,26 +184,15 @@ void showAllData(ListTransaksi &LTR) {
     while (P != nullptr) {
         count++;
         cout << "\nTransaksi ke-" << count << endl;
-        cout << "Toko       : " << P->detailToko->info.namaToko << " (ID: " << P->detailToko->info.idToko << ")" << endl;
-        cout << "Pembeli    : " << P->detailPembeli->info.namaPembeli << " (ID: " << P->detailPembeli->info.idPembeli << ")" << endl;
+        cout << "Toko       : " << info(detailToko(P)).namaToko << " (ID: " << info(detailToko(P)).idToko << ")" << endl;
+        cout << "Pembeli    : " << info(detailPembeli(P)).namaPembeli << " (ID: " << info(detailPembeli(P)).idPembeli << ")" << endl;
         cout << "------------------------" << endl;
         P = next(P);
     }
     cout << "\nTotal Transaksi: " << count << endl;
     cout << "===================" << endl;
 }
-/*
-// Menampilkan daftar Toko berdasarkan Pembeli tertentu
-void showTokoByPembeli(ListTransaksi &LTR, int Pembeli_ID) {
-    adrTransaksi P = first(LTR);
-    while (P != nullptr) {
-        if (P->detailPembeli->info.idPembeli == Pembeli_ID) {
-            cout << "Toko ID: " << P->detailToko->info.idToko << " - " << P->detailToko->info.namaToko << endl;
-        }
-        P = next(P);
-    }
-}
-*/
+
 // Menampilkan daftar Pembeli berdasarkan Toko tertentu
 void showPembeliByToko(ListTransaksi &LTR, int Toko_ID) {
     if (first(LTR) == nullptr) {
@@ -297,8 +209,8 @@ void showPembeliByToko(ListTransaksi &LTR, int Toko_ID) {
     // Mencari nama toko untuk header
     adrTransaksi temp = first(LTR);
     while (temp != nullptr) {
-        if (temp->detailToko->info.idToko == Toko_ID) {
-            namaToko = temp->detailToko->info.namaToko;
+        if (info(detailToko(temp)).idToko == Toko_ID) {
+            namaToko = info(detailToko(temp)).namaToko;
             break;
         }
         temp = next(temp);
@@ -314,11 +226,11 @@ void showPembeliByToko(ListTransaksi &LTR, int Toko_ID) {
 
     adrTransaksi P = first(LTR);
     while (P != nullptr) {
-        if (P->detailToko->info.idToko == Toko_ID) {
+        if (info(detailToko(P)).idToko == Toko_ID) {
             found = true;
             count++;
-            cout << count << ". " << P->detailPembeli->info.namaPembeli
-                 << " (ID: " << P->detailPembeli->info.idPembeli << ")" << endl;
+            cout << count << ". " << info(detailPembeli(P)).namaPembeli
+                 << " (ID: " << info(detailPembeli(P)).idPembeli << ")" << endl;
         }
         P = next(P);
     }
@@ -336,7 +248,7 @@ int countPembeli(ListTransaksi &LTR, int Toko_ID) {
     int count = 0;
     adrTransaksi P = first(LTR);
     while (P != nullptr) {
-        if (P->detailToko->info.idToko == Toko_ID) {
+        if (info(detailToko(P)).idToko == Toko_ID) {
             count++;
         }
         P = next(P);
@@ -344,140 +256,116 @@ int countPembeli(ListTransaksi &LTR, int Toko_ID) {
     return count;
 }
 
-// Menghapus semua Pembeli yang terkait dengan Toko tertentu dan menghapus transaksi terkait
+// Fungsi untuk menghapus semua pembeli yang terkait dengan toko tertentu
 void deletePembeliByToko(ListPembeli &LP, ListTransaksi &LTR, int Toko_ID) {
+    // Jika list pembeli atau list transaksi kosong, tampilkan pesan dan keluar dari fungsi
     if (first(LP) == nullptr || first(LTR) == nullptr) {
         cout << "List Pembeli atau Transaksi kosong." << endl;
         return;
     }
 
     // Hapus hanya transaksi yang terkait dengan Toko_ID
-    adrTransaksi P = first(LTR);
-    adrTransaksi prev = nullptr;
-    bool found = false;
+    adrTransaksi P = first(LTR);  // Pointer untuk iterasi list transaksi
+    adrTransaksi sebelum = nullptr; // Pointer untuk menyimpan elemen sebelumnya
+    bool found = false; // Penanda apakah transaksi terkait ditemukan
 
+    // Iterasi melalui list transaksi
     while (P != nullptr) {
-        adrTransaksi next = P->next;
-        if (P->detailToko->info.idToko == Toko_ID) {
-            found = true;
-            if (prev == nullptr) {
-                first(LTR) = next;
+        adrTransaksi setelah = next(P); // Simpan elemen berikutnya untuk iterasi
+        // Jika transaksi terkait dengan Toko_ID
+        if (info(detailToko(P)).idToko == Toko_ID) {
+            found = true; // Tandai bahwa transaksi ditemukan
+            if (sebelum == nullptr) {
+                // Jika transaksi yang dihapus adalah elemen pertama
+                first(LTR) = setelah;
             } else {
-                prev->next = next;
+                // Jika bukan elemen pertama
+                next(sebelum) = setelah;
             }
-            delete P;
+            delete P; // Hapus elemen transaksi dari memori
         } else {
-            prev = P;
+            sebelum = P; // Update pointer 'sebelum' untuk iterasi berikutnya
         }
-        P = next;
+        P = setelah; // Lanjutkan iterasi ke elemen berikutnya
     }
 
+    // Tampilkan pesan keberhasilan atau jika tidak ditemukan transaksi
     if (found) {
         cout << "Berhasil menghapus transaksi yang terkait dengan Toko ID " << Toko_ID << endl;
     } else {
         cout << "Tidak ditemukan transaksi yang terkait dengan Toko ID " << Toko_ID << endl;
     }
 }
-/*
-// Menghapus semua Toko yang terkait dengan Pembeli tertentu dan menghapus transaksi terkait
-void deleteTokoByPembeli(ListToko &LT, ListTransaksi &LTR, int Pembeli_ID) {
-    if (first(LT) == nullptr || first(LTR) == nullptr) {
-        cout << "List Toko atau Transaksi kosong." << endl;
-        return;
-    }
 
-    // Ambil ID Toko dari transaksi yang terkait dengan Pembeli_ID
-    adrTransaksi P = first(LTR);
-    while (P != nullptr) {
-        if (P->detailPembeli->info.idPembeli == Pembeli_ID) {
-            // Hapus Toko
-            deleteToko(LT, P->detailToko->info.idToko);
-        }
-        P = next(P);
-    }
 
-    // Hapus semua transaksi yang terkait dengan Pembeli_ID
-    P = first(LTR);
-    adrTransaksi prev = nullptr;
-    bool found = false;
-
-    while (P != nullptr) {
-        adrTransaksi next = P->next;
-        if (P->detailPembeli->info.idPembeli == Pembeli_ID) {
-            found = true;
-            if (prev == nullptr) {
-                first(LTR) = next;
-            } else {
-                prev->next = next;
-            }
-            delete P;
-        } else {
-            prev = P;
-        }
-        P = next;
-    }
-
-    if (found) {
-        cout << "Berhasil menghapus Toko dan transaksi yang terkait dengan Pembeli ID " << Pembeli_ID << endl;
-    } else {
-        cout << "Tidak ditemukan transaksi yang terkait dengan Pembeli ID " << Pembeli_ID << endl;
-    }
-}
-*/
-// Menghapus Toko dan semua transaksi yang terkait dengan Toko tersebut
+// Fungsi untuk menghapus toko dan semua transaksi yang terkait dengan toko tersebut
 void deleteTokoDanTransaksiTerkait(ListToko &LT, ListTransaksi &LTR, int Toko_ID) {
+    // Jika list toko kosong, tampilkan pesan dan keluar dari fungsi
     if (first(LT) == nullptr) {
         cout << "List Toko kosong" << endl;
         return;
     }
 
-    // Cari Toko yang akan dihapus
+    // Mencari toko yang akan dihapus berdasarkan Toko_ID
     adrToko tokoToDelete = searchToko(LT, Toko_ID);
+    // Jika toko tidak ditemukan, keluar dari fungsi
     if (tokoToDelete == nullptr) {
         return; // Toko tidak ditemukan, pesan error sudah ditampilkan di searchToko
     }
 
-    // Hapus semua transaksi yang terkait dengan Toko_ID
-    adrTransaksi P = first(LTR);
-    adrTransaksi prev = nullptr;
-    bool foundTransaksi = false;
+    // Menghapus semua transaksi yang terkait dengan Toko_ID
+    adrTransaksi P = first(LTR);  // Pointer untuk iterasi list transaksi
+    adrTransaksi sebelum = nullptr; // Pointer untuk menyimpan elemen sebelumnya
+    bool foundTransaksi = false; // Penanda apakah ada transaksi yang ditemukan
 
+    // Iterasi melalui list transaksi
     while (P != nullptr) {
-        adrTransaksi next = P->next;
-        if (P->detailToko->info.idToko == Toko_ID) {
-            foundTransaksi = true;
-            if (prev == nullptr) {
-                first(LTR) = next;
+        adrTransaksi setelah = next(P); // Simpan elemen berikutnya
+        // Jika transaksi terkait dengan Toko_ID
+        if (info(detailToko(P)).idToko == Toko_ID) {
+            foundTransaksi = true; // Tandai bahwa transaksi ditemukan
+            if (sebelum == nullptr) {
+                // Jika transaksi yang dihapus adalah elemen pertama
+                first(LTR) = setelah;
             } else {
-                prev->next = next;
+                // Jika bukan elemen pertama
+                next(sebelum) = setelah;
             }
-            delete P;
+            delete P; // Hapus elemen transaksi
         } else {
-            prev = P;
+            sebelum = P; // Update pointer 'sebelum' untuk iterasi berikutnya
         }
-        P = next;
+        P = setelah; // Lanjutkan iterasi ke elemen berikutnya
     }
 
-    // Hapus Toko dari list Toko
+    // Menghapus toko dari list toko
     if (tokoToDelete == first(LT)) {
+        // Jika toko yang dihapus adalah elemen pertama
         first(LT) = next(tokoToDelete);
         if (first(LT) != nullptr) {
+            // Update pointer prev elemen pertama jika ada
             prev(first(LT)) = nullptr;
         }
     } else {
-        prev(tokoToDelete)->next = next(tokoToDelete);
+        // Jika toko bukan elemen pertama
+        next(prev(tokoToDelete)) = next(tokoToDelete);
         if (next(tokoToDelete) != nullptr) {
+            // Update pointer prev elemen berikutnya jika ada
             prev(next(tokoToDelete)) = prev(tokoToDelete);
         }
     }
 
+    // Simpan nama toko untuk pesan keberhasilan
     string namaToko = info(tokoToDelete).namaToko;
-    delete tokoToDelete;
+    delete tokoToDelete; // Hapus elemen toko dari memori
 
+    // Tampilkan pesan keberhasilan
     cout << "Berhasil menghapus Toko " << namaToko << " (ID: " << Toko_ID << ")" << endl;
     if (foundTransaksi) {
+        // Jika ada transaksi yang terkait, tampilkan pesan keberhasilan
         cout << "Berhasil menghapus semua transaksi yang terkait dengan Toko tersebut" << endl;
     } else {
+        // Jika tidak ada transaksi yang terkait, tampilkan pesan
         cout << "Tidak ada transaksi yang terkait dengan Toko tersebut" << endl;
     }
 }
