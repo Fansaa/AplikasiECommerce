@@ -28,7 +28,7 @@ int main() {
         cout << "7. Hubungkan Toko dengan Pembeli (Transaksi)\n";
         cout << "8. Tampilkan Semua Data Transaksi\n";
         cout << "9. Tampilkan Pembeli Berdasarkan Toko\n";
-        cout << "10. Hapus Pembeli Berdasarkan Toko\n";
+        cout << "10. Hapus Pembeli Berdasarkan Toko yang terkait\n";
         cout << "11. Hitung Jumlah Pembeli pada Toko Tertentu\n";
         cout << "12. Keluar\n";
         cout << "Pilih: ";
@@ -49,6 +49,13 @@ int main() {
                 getline(cin, namaToko);
                 cout << "Masukkan Jumlah Produk: ";
                 cin >> jumlahBeli;
+
+                bool cek = isIDTokoExist(LT, tokoID);
+                if (cek == true) {
+                    cout << endl;
+                    cout << "ID sudah ada, tidak bisa menambahkan Toko" << endl;
+                    break;
+                }
 
                 Toko toko = {tokoID, namaToko, jumlahBeli};
                 ElemenToko* P = createNewElmToko(toko);
@@ -83,7 +90,9 @@ int main() {
                 cin >> tokoID;
                 ElemenToko* P = searchToko(LT, tokoID);
                 if (P) {
-                    cout << "Toko Ditemukan: " << P->info.namaToko << endl;
+                    cout << "Toko Ditemukan: " << info(P).namaToko << endl;
+                    cout << "ID Toko: " << info(P).idToko << endl;
+                    cout << "Jumlah Produk: " << info(P).jumlahProduk << endl;
                 }
                 break;
             }
@@ -93,7 +102,8 @@ int main() {
                 cin >> pembeliID;
                 ElemenPembeli* pembeli = searchPembeli(LP, pembeliID);
                 if (pembeli) {
-                    cout << "Pembeli Ditemukan: " << pembeli->info.namaPembeli << endl;
+                    cout << "Pembeli Ditemukan: " << info(pembeli).namaPembeli << endl;
+                    cout << "ID Pembeli: " << info(pembeli).idPembeli << endl;
                 }
                 break;
             }
@@ -104,6 +114,13 @@ int main() {
                 cin.ignore();  // Menghapus karakter baris baru dari buffer input
                 cout << "Masukkan Nama Pembeli: ";
                 getline(cin, namaPembeli);
+
+                bool cek = isIDPembeliExist(LP, pembeliID);
+                if (cek == true) {
+                    cout << endl;
+                    cout << "ID sudah ada, tidak bisa menambahkan Pembeli" << endl;
+                    break;
+                }
 
                 Pembeli pembeli = {pembeliID, namaPembeli};
                 ElemenPembeli* P = createNewElmPembeli(pembeli);
@@ -123,7 +140,7 @@ int main() {
                 if (toko && pembeli) {
                     insertTransaksi(LTR, toko, pembeli); // Menghubungkan transaksi
                 } else {
-                    cout << "Toko atau Pembeli tidak ditemukan.\n";
+                    cout << "Transaksi tidak bisa dilakukan.\n";
                 }
                 break;
             }
@@ -150,6 +167,12 @@ int main() {
             case 11: {
                 cout << "Masukkan ID Toko untuk menghitung jumlah pembeli: ";
                 cin >> tokoID;
+                bool cek = isIDTokoExist(LT, tokoID);
+                if (cek == false) {
+                    cout << endl;
+                    cout << "ID Tidak ditemukan, tidak bisa menghitung jumlah pembeli" << endl;
+                    break;
+                }
                 int count = countPembeli(LTR, tokoID); // Menghitung jumlah pembeli
                 cout << "Jumlah pembeli pada Toko ID " << tokoID << ": " << count << endl;
                 break;
