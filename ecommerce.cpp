@@ -100,12 +100,16 @@ adrToko searchToko(ListToko &LT, int Toko_ID) {
 // Menampilkan semua data Toko
 void showToko(ListToko &LT) {
     adrToko P = first(LT);
-    while (P != nullptr) {
+    if (P == NULL) {
+        cout << "List Toko Kosong" << endl;
+    } else {
+        while (P != nullptr) {
         cout << "ID Toko: " << info(P).idToko << endl;
         cout << "Nama Toko: " << info(P).namaToko << endl;
         cout << "Jumlah Produk: " << info(P).jumlahProduk << endl;
         cout << "------------------------" << endl;
         P = next(P);
+    }
     }
 }
 
@@ -368,4 +372,43 @@ void deleteTokoDanTransaksiTerkait(ListToko &LT, ListTransaksi &LTR, int Toko_ID
         // Jika tidak ada transaksi yang terkait, tampilkan pesan
         cout << "Tidak ada transaksi yang terkait dengan Toko tersebut" << endl;
     }
+}
+
+
+// Fungsi untuk mengisi data dummy
+void isiDataDummy(ListToko &LT, ListPembeli &LP, ListTransaksi &LTR) {
+    // Data Dummy untuk List Toko
+    Toko toko1 = {1, "Shopee", 100};
+    Toko toko2 = {2, "Tokopedia", 50};
+    Toko toko3 = {3, "Lazada", 30};
+
+    ElemenToko *ET1 = createNewElmToko(toko1);
+    ElemenToko *ET2 = createNewElmToko(toko2);
+    ElemenToko *ET3 = createNewElmToko(toko3);
+
+    insertLastToko(LT, ET1);
+    insertLastToko(LT, ET2);
+    insertLastToko(LT, ET3);
+
+    // Data Dummy untuk List Pembeli
+    Pembeli pembeli1 = {1, "Fansa"};
+    Pembeli pembeli2 = {2, "Frisca"};
+    Pembeli pembeli3 = {3, "Bayu"};
+    Pembeli pembeli4 = {4, "Syahdan"};
+
+    ElemenPembeli *EP1 = createNewElmPembeli(pembeli1);
+    ElemenPembeli *EP2 = createNewElmPembeli(pembeli2);
+    ElemenPembeli *EP3 = createNewElmPembeli(pembeli3);
+    ElemenPembeli *EP4 = createNewElmPembeli(pembeli4);
+
+    insertLastPembeli(LP, EP1);
+    insertLastPembeli(LP, EP2);
+    insertLastPembeli(LP, EP3);
+    insertLastPembeli(LP, EP4);
+
+    // Data Dummy untuk List Transaksi
+    insertTransaksi(LTR, ET1, EP1); // Fansa membeli dari Shopee
+    insertTransaksi(LTR, ET2, EP2); // Frisca membeli dari Tokopedia
+    insertTransaksi(LTR, ET3, EP3); // Bayu membeli dari Lazada
+    insertTransaksi(LTR, ET1, EP4); // Syahdan membeli dari Shopee
 }
