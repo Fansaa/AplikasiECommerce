@@ -138,4 +138,7 @@ void deletePembeliByToko(ListPembeli &LP, ListTransaksi &LTR, int Toko_ID);
 
 // Menghapus Toko dan semua transaksi yang terkait dengan Toko tersebut
 void deleteTokoDanTransaksiTerkait(ListToko &LT, ListTransaksi &LTR, int Toko_ID);
+
+void isiDataDummy(ListToko &LT, ListPembeli &LP, ListTransaksi &LTR);
+
 #endif // ECOMMERCE_H_INCLUDED
